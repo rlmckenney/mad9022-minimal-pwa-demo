@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en-CA">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- icons generated with realfavicongenerator.net -->
+  <!-- pwa manifest -->
+  <link rel="manifest" href="webmanifest.json" />
+  <!-- older android support (manifest theme_color)-->
+  <meta name="theme-color" content="#2196f3" />
+  <!-- ios support  (manifest theme_color and icons)-->
+  <link rel="apple-touch-icon" sizes="180x180" href="/img/icons/apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-status-bar" content="#2196f3" />
+  <link rel="mask-icon" href="/img/icons/safari-pinned-tab.svg" color="#5bbad5">
+  <!-- Browser tab icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/icons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/img/icons/favicon-16x16.png">
+  <link rel="shortcut icon" href="favicon.ico">
+  <!-- Windows 8 and 10 metro support -->
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="msapplication-config" content="/img/icons/browserconfig.xml">
+
+  <title>PWA Demo</title>
+  <meta name="description" content="This demo app shows the min requirements for an installable PWA">
+</head>
+<body>
+  <h1>PWA Demo</h1>
+  <p>With a little help from Google ... <br><a href="https://web.dev/offline-fallback-page/" rel="noopener">Create an offline fallback page</a></p>
+  <p>... and <a href="realfavicongenerator.net" rel="noreferrer noopener" >realfavicongenerator.net</a></p>
+
+  <script type="module">
+    window.addEventListener('load', () => {
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+      }
+    })
+  </script>
+</body>
+</html>

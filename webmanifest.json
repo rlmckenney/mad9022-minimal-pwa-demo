@@ -1,0 +1,25 @@
+{
+  "name": "MAD9022 PWA Demo Template",
+  "short_name": "MAD9022 PWA",
+  "description": "This demo app shows the min requirements for an installable PWA",
+  "theme_color": "#2196f3",
+  "background_color": "#2196f3",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/index.html",
+  "lang": "en-CA",
+  "icons": [
+    {
+      "src": "/img/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/img/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
