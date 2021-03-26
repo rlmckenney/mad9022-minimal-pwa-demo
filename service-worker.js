@@ -1,20 +1,8 @@
-/*
-Copyright 2015, 2019, 2020, 2021 Google LLC. All Rights Reserved.
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-*/
-
 // Incrementing OFFLINE_VERSION will kick off the install event and force
 // previously cached resources to be updated from the network.
 const OFFLINE_VERSION = 2
 const CACHE_NAME = 'offline'
+const API_CACHE_NAME = 'swapi'
 // Customize this with a different URL if needed.
 const OFFLINE_URL = 'offline.html'
 
@@ -83,4 +71,30 @@ self.addEventListener('fetch', event => {
   // chance to call event.respondWith(). If no fetch handlers call
   // event.respondWith(), the request will be handled by the browser as if there
   // were no service worker involvement.
+})
+
+// Add another fetch event listener for SWAPI API requests
+self.addEventListener('fetch', event => {
+  if (
+    event.request.url.startsWith('https://swapi.dev/api') &&
+    event.request.method === 'GET'
+  ) {
+    event.respondWith(
+      (async () => {
+        const cache = await caches.open(API_CACHE_NAME)
+        try {
+          // Always try the network first.
+          const networkResponse = await fetch(event.request)
+          // The response body can only be consumed once, so use clone() to make
+          // a copy that can be stored in the cache.
+          await cache.put(event.request, networkResponse.clone())
+          return networkResponse
+        } catch (err) {
+          // If there is a network error, try the cache
+          const cachedResponse = await cache.match(event.request)
+          return cachedResponse
+        }
+      })()
+    )
+  }
 })
