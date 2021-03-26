@@ -29,12 +29,42 @@
   <p>With a little help from Google ... <br><a href="https://web.dev/offline-fallback-page/" rel="noopener">Create an offline fallback page</a></p>
   <p>... and <a href="realfavicongenerator.net" rel="noreferrer noopener" >realfavicongenerator.net</a></p>
 
+  <h2>Caching API requests</h2>
+  <form id="swapi-form">
+    <label for="characterId">ID</label>
+    <input id="characterId" type="number" required>
+    <button type="submit">Fetch</button>
+  </form>
+  <div><pre id="character"></pre></div>
+
   <script type="module">
+    const BASE_SWAPI_URL = 'https://swapi.dev/api'
+    
     window.addEventListener('load', () => {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js')
       }
+
+      document.getElementById('swapi-form').addEventListener('submit', handleFormSubmit)
     })
+
+    async function handleFormSubmit (event) {
+      event.preventDefault()
+      
+      const id = event.target.characterId.value
+      const character = await fetchCharacter(id)
+      document.getElementById('character').innerText = JSON.stringify(character, null, 2)
+    }
+
+    async function fetchCharacter (id = 1) {
+      try {
+        const response = await fetch(`${BASE_SWAPI_URL}/people/${id}`)
+        if (!response.ok) throw new Error(response.message)
+        return response.json()
+      } catch (err) {
+        console.warn(err)
+      }
+    }
   </script>
 </body>
 </html>
