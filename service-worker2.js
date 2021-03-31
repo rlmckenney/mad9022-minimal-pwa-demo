@@ -85,25 +85,51 @@ self.addEventListener('fetch', event => {
   // were no service worker involvement.
 })
 
+// self.addEventListener('fetch', event => {
+//   if (
+//     event.request.url.startsWith('https://swapi.dev/api') &&
+//     event.request.method === 'GET'
+//   ) {
+//     event.respondWith(
+//       (async () => {
+//         const cache = await caches.open('swapi')
+//         try {
+//           // Always try the network first
+//           const networkResponse = await fetch(event.request)
+//           cache.put(event.request, networkResponse.clone())
+//           return networkResponse
+//         } catch (err) {
+//           // If there was a network error, check the cache
+//           const cachedResult = await cache.match(event.request)
+//           return cachedResult
+//         }
+//       })()
+//     )
+//   }
+// })
+
 self.addEventListener('fetch', event => {
   if (
     event.request.url.startsWith('https://swapi.dev/api') &&
     event.request.method === 'GET'
   ) {
     event.respondWith(
-      (async () => {
-        const cache = await caches.open('swapi')
-        try {
-          // Always try the network first
-          const networkResponse = await fetch(event.request)
-          cache.put(event.request, networkResponse.clone())
-          return networkResponse
-        } catch (err) {
+      // Always try the network first
+      fetch(event.request)
+        .then(networkResponse => {
+          return caches.open('swapi').then(cache => {
+            cache.put(event.request, networkResponse.clone())
+            return networkResponse
+          })
+        })
+        .catch(err => {
           // If there was a network error, check the cache
-          const cachedResult = await cache.match(event.request)
-          return cachedResult
-        }
-      })()
+          return caches.open('swapi').then(cache => {
+            return cache.match(event.request).then(cachedResult => {
+              return cachedResult
+            })
+          })
+        })
     )
   }
 })
